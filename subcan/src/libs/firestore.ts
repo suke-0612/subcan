@@ -1,6 +1,8 @@
 import { db } from "./firebase";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 
+// FireStoreを操作する関数はここに書く
+
 // データの追加
 export const addUser = async (name: string, email: string) => {
   const docRef = await addDoc(collection(db, "users"), {
