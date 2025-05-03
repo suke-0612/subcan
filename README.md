@@ -48,11 +48,11 @@ nvm alias default 'lts/*'
 ## 開発環境の立ち上げ方
 - 該当の作業ディレクトリに移動する。
 
-```cd ~/???/jackHack2025_F```
+```cd ~/???/jackHack2025_F/subcan```
 
 ```pwd```
 
-で/jackHack2025_Fが最後にあれば大丈夫！
+で/subcanが最後にあれば大丈夫！
 
 - スタートコマンドを打つ
 
