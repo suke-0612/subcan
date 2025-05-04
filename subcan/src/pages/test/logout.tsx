@@ -24,5 +24,23 @@ export default function LogoutPage() {
   };
 
   // ボタン一つだけの簡易的なログアウト画面
-  return <button onClick={doLogout}>ログアウト</button>;
+  return (
+    <button
+      style={{
+        opacity: 0.5,
+        width: "80%",
+        maxWidth: "200px",
+        padding: "8px 10px",
+        border: "1px solid red",
+        borderRadius: "10px",
+        backgroundColor: "white",
+        color: "red",
+        fontSize: "20px",
+        fontWeight: "bold",
+      }}
+      onClick={doLogout}
+    >
+      ログアウト
+    </button>
+  );
 }
