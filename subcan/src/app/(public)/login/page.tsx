@@ -14,6 +14,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await loginWithEmail(email, password);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       setErrorMsg("メールアドレスまたはパスワードが正しくありません");
     } finally {
