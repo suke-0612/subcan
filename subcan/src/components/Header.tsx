@@ -46,7 +46,6 @@ const Header: React.FC<Props> = (props) => {
     { name: "グラフ", path: "/graph" },
     { name: "サブスク仕分け", path: "/check" },
     { name: "ログアウト", path: "/logout" },
-    { name: "ログイン", path: "/login" },
     { name: "詳細", path: "/detail" },
   ];
 

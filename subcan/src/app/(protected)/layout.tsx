@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import { authOptions } from "@/libs/auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -8,7 +9,12 @@ const Layout = async ({ children }: { children: ReactElement }) => {
 
   if (!session?.user) redirect(`/login`);
 
-  return <>{children}</>;
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 };
 
 export default Layout;

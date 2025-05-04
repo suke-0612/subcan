@@ -1,5 +1,5 @@
 import React from "react";
-import LogoutPage from "./../logout/page";
+import LogoutPage from "../logout/page";
 
 type Props = {
   // Propsの型をここに定義

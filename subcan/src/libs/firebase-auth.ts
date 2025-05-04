@@ -1,11 +1,15 @@
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth as firebaseAuth } from "./firebase";
 import {
   signIn as signInWithNextAuth,
   signOut as signOutWithNextAuth,
 } from "next-auth/react";
 
-export function logInWithFirebaseAuth() {
+export function loginWithGoogle() {
   const provider = new GoogleAuthProvider();
 
   signInWithPopup(firebaseAuth, provider)
@@ -25,7 +29,7 @@ export function logInWithFirebaseAuth() {
     });
 }
 
-export function logOutWithFirebaseAuth() {
+export function logout() {
   firebaseAuth
     .signOut()
     .then(() => {
@@ -34,4 +38,29 @@ export function logOutWithFirebaseAuth() {
     .catch((error) => {
       console.error("Error Sign Out with Google", error);
     });
+}
+
+export async function loginWithEmail(email: string, password: string) {
+  try {
+    const { user } = await signInWithEmailAndPassword(
+      firebaseAuth,
+      email,
+      password
+    );
+
+    if (user) {
+      const idToken = await user.getIdToken();
+      const refreshToken = user.refreshToken;
+
+      await signInWithNextAuth("credentials", {
+        idToken,
+        refreshToken,
+        callbackUrl: `/`,
+      });
+    }
+  } catch (error) {
+    console.error("Error Sign In with Email", error);
+    // 必要に応じてエラーメッセージを投げる
+    throw error;
+  }
 }
