@@ -1,15 +1,16 @@
-interface Subscription {
+import { Timestamp } from "firebase-admin/firestore";
+
+export interface Subscription {
   user_id: string; // ユーザーID
   name: string; // サブスク名
   fee: number; // 料金
-  period: string; // サブスク期間
-  payment_starts_at: string; // 支払い開始日
+  payment_starts_at: Timestamp; // 支払い開始日
   payment_period: string; // 支払い期間
-  last_payment_date: string; // 最後の支払日
-  frequency: number; // ユーザーの利用頻度
+  last_payment_date: Timestamp | null; // 最後の支払日
+  frequency: number; // ユーザーの利用頻度(値が大きいと頻度が少ない、小さいと頻度が多い)
   icon: string; // アイコンへのパス
-  trial_period: string; // 無料期間
-  cancel_url?: string; // 解約先URL
-  created_at: string;
-  updated_at: string;
+  is_trial_period: boolean; // 無料期間か(次の支払日まで無料期間かどうか)
+  cancel_url: string | null; // 解約先URL
+  created_at: Timestamp;
+  updated_at: Timestamp;
 }
