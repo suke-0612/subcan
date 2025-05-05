@@ -59,7 +59,6 @@ const Header: React.FC<Props> = (props) => {
           left: 0,
           padding: "24px 16px",
           width: "100%",
-          height: "50px",
           backgroundColor: "#284B63",
         }}
       />
