@@ -1,6 +1,14 @@
 import { Subscription } from "@/types/Subscriptions";
 import { db } from "./firebase";
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  getDoc,
+  doc,
+} from "firebase/firestore";
 
 // FireStoreを操作する関数はここに書く
 
@@ -51,5 +59,18 @@ export const getSubscriptionList = async (
   const snapshot = await getDocs(
     query(collection(db, "subscriptions"), where("user_id", "==", uid))
   );
-  return snapshot.docs.map((doc) => doc.data() as Subscription);
+  return snapshot.docs.map(
+    (doc) => ({ id: doc.id, ...doc.data() } as Subscription)
+  );
+};
+
+// 1つのサブスクのデータを取得
+export const getSubscription = async (
+  uid: string,
+  id: string
+): Promise<Subscription | undefined> => {
+  const snapshot = await getDoc(doc(db, "subscriptions", id));
+  if (snapshot.exists() && snapshot.data().user_id === uid)
+    return { id: snapshot.id, ...snapshot.data() } as Subscription;
+  return undefined;
 };

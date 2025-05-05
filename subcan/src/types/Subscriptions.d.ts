@@ -1,6 +1,7 @@
 import { Timestamp } from "firebase-admin/firestore";
 
 export interface Subscription {
+  id: string;
   user_id: string; // ユーザーID
   name: string; // サブスク名
   fee: number; // 料金
