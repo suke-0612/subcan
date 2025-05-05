@@ -48,7 +48,6 @@ export const getUsers = async () => {
   }));
 };
 
-
 export const getsubscriptions = async (): Promise<CheckSubscription[]> => {
   const snapshot = await getDocs(collection(db, "subscriptions"));
   snapshot.docs.map((doc) => console.log(doc.data()));
@@ -67,6 +66,7 @@ export const updateSubscription = async (id: string, value: number) => {
   await setDoc(doc(db, "example_subscription", id), {
     frequency: value,
   });
+};
 
 // サブスクデータの追加
 export const addSubscriptionInfo = async (new_subsc: Subscription) => {
