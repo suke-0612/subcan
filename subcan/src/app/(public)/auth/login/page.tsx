@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { loginWithGoogle, loginWithEmail } from "@/libs/firebase-auth";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -149,20 +150,22 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <button
-          style={{
-            width: "100%",
-            padding: "12px",
-            borderRadius: "24px",
-            border: "none",
-            backgroundColor: "#497171",
-            color: "#fff",
-            fontSize: "16px",
-            cursor: "pointer",
-          }}
-        >
-          アカウントを作成
-        </button>
+        <Link href="/auth/register">
+          <button
+            style={{
+              width: "100%",
+              padding: "12px",
+              borderRadius: "24px",
+              border: "none",
+              backgroundColor: "#497171",
+              color: "#fff",
+              fontSize: "16px",
+              cursor: "pointer",
+            }}
+          >
+            アカウントを作成
+          </button>
+        </Link>
       </div>
     </div>
   );
