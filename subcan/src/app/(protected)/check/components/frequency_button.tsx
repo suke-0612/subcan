@@ -4,6 +4,7 @@ import React from "react";
 type Props = {
   // Propsの型をここに定義
   content: string;
+  value: number;
   handleClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
@@ -17,7 +18,7 @@ const FrequencyButton: React.FC<Props> = (props) => {
       }}
     >
       <button
-        value={props.content}
+        value={props.value}
         style={{
           textAlign: "center",
           backgroundColor: "white",

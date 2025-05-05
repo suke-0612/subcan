@@ -15,3 +15,10 @@ export interface Subscription {
   created_at: Timestamp;
   updated_at: Timestamp;
 }
+
+export interface CheckSubscription {
+  id: string;
+  name: string;
+  fee: number;
+  icon: string;
+}
