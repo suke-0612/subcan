@@ -33,11 +33,31 @@ const SubscriptionDetail = ({ subsc_id }: Props) => {
   if (isLoading) return <div>読み込み中...</div>;
   if (!info) return <div>情報が見つかりません。</div>;
 
+  const stringFrequency = (frequency: number) => {
+    if (frequency === 0) return "毎日";
+    if (frequency === 1) return "週に1回";
+    if (frequency === 2) return "月に1回";
+    if (frequency === 3) return "年に1回";
+    if (frequency === 4) return "使用していない";
+    return "不明";
+  };
+
+  const caluculateNextPaymentDate = (
+    paymentStartsAt: Date,
+    paymentPeriod: string
+  ): Date => {
+    const startDate = new Date(paymentStartsAt);
+    const period = paymentPeriod.split("days")[0];
+    const nextPaymentDate = new Date(startDate);
+    nextPaymentDate.setDate(startDate.getDate() + parseInt(period));
+    return nextPaymentDate;
+  };
+
   const basicInfo = [
     { label: "金額", value: info.fee ?? "未登録" },
-    { label: "次の引き落とし日", value: info.nextPayme ?? "未登録" },
+    { label: "次の引き落とし日", value: caluculateNextPaymentDate ?? "未登録" },
     { label: "最後の支払い日", value: info.lastPaymentDate ?? "未登録" },
-    { label: "利用頻度", value: info.frequency ?? "未登録" },
+    { label: "利用頻度", value: stringFrequency(info.frequency) ?? "未登録" },
   ];
 
   // const firstInfo = [{ label: "登録日", value: info.created_at ?? "不明" }];
@@ -79,7 +99,7 @@ const SubscriptionDetail = ({ subsc_id }: Props) => {
       </div>
 
       {/* 解約ボタン */}
-      <Link href={info.cancelUrl ?? "#"}>
+      <Link href={info.cancel_url ?? "#"}>
         <button
           style={{
             width: "100%",
