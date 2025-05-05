@@ -12,6 +12,7 @@ import {
   getDoc,
   doc,
 } from "firebase/firestore";
+import { ExampleSubscription } from "@/types/ExampleSubscription";
 
 // FireStoreを操作する関数はここに書く
 
@@ -126,4 +127,17 @@ export const getSubscriptionsById = async (uid: string) => {
     is_trial_period: doc.data().is_trial_period,
     cancel_url: doc.data().cancel_url,
   }));
+};
+
+// サブスク例の一括取得
+export const getExampleSubscription = async (): Promise<
+  ExampleSubscription[]
+> => {
+  const snapshot = await getDocs(collection(db, "example_subscription"));
+  return snapshot.docs.map(
+    (doc) =>
+      ({
+        ...doc.data(),
+      } as ExampleSubscription)
+  );
 };
