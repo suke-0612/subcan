@@ -5,76 +5,13 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { useState } from "react";
+import Card from "@/components/Card";
+import Loading from "@/components/Loading";
 
-// 1つのサブスクのカード
-const Card: React.FC<Subscription> = (props) => {
-  return (
-    <a
-      href={`/${props.id}`}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        border: "solid 1px",
-        backgroundColor: "#353535",
-        width: "85%",
-        minHeight: "130px",
-        margin: "15px auto",
-        borderRadius: "5px",
-        boxShadow: "3px 4px 4px rba(0,0,0,0.25)",
-        textDecoration: "none",
-      }}
-    >
-      {/* アイコン部分 */}
-      <div
-        style={{ padding: "10px", width: "40%", textAlign: "center", flex: 4 }}
-      >
-        <img
-          src={props.icon}
-          alt={`${props.name} icon`}
-          style={{
-            maxWidth: "80%",
-            maxHeight: "80%",
-            backgroundColor: "white",
-          }}
-        />
-      </div>
-
-      {/* サブスク名・金額部分 */}
-      <div
-        style={{
-          padding: "10px",
-          color: "white",
-          textAlign: "center",
-          flex: 6,
-        }}
-      >
-        <span
-          style={{
-            fontSize: props.name.length <= 20 ? 24 : 20,
-            wordBreak: "break-word",
-          }}
-        >
-          {props.name}
-        </span>
-
-        <span
-          style={{
-            fontSize: "20px",
-            textDecorationLine: "underline",
-            display: "block",
-          }}
-        >
-          &yen;{props.fee.toLocaleString()}
-        </span>
-      </div>
-    </a>
-  );
-};
-
-type Props = {};
+type Props = object;
 
 // 登録しているサブスク一覧
-const SubscriptionList: React.FC<Props> = (props) => {
+const SubscriptionList: React.FC<Props> = () => {
   const [sortOption, setSortOption] = useState<string>("");
   const [subscList, setSubscList] = useState<Subscription[] | undefined>();
 
@@ -110,37 +47,47 @@ const SubscriptionList: React.FC<Props> = (props) => {
   })();
 
   if (!subscList) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
     <div>
-      <div style={{ height: "50px" }} />
-
       <div
         className="container"
         style={{ maxWidth: "330px", margin: "0 auto", padding: "0 16px" }}
       >
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          {/* 並び替え */}
-          <div>
-            <label>並び替え: </label>
-            <select
-              name="sort"
-              id="sort"
-              onChange={(e) => setSortOption(e.target.value)}
-            >
-              <option value="">登録順</option>
-              <option value="freqHi">使用頻度(高い順)</option>
-              <option value="freqLow">使用頻度(低い順)</option>
-              <option value="costHi">金額(高い順)</option>
-              <option value="costLow">金額(低い順)</option>
-            </select>
-          </div>
+        {/* 並び替え */}
+        <div>
+          <label htmlFor="sort" style={{ fontWeight: 500 }}>
+            並び替え:&nbsp;
+          </label>
+          <select
+            id="sort"
+            onChange={(e) => setSortOption(e.target.value)}
+            style={{
+              padding: "6px 10px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              fontSize: "14px",
+            }}
+          >
+            <option value="">登録順</option>
+            <option value="freqHi">使用頻度(高い順)</option>
+            <option value="freqLow">使用頻度(低い順)</option>
+            <option value="costHi">金額(高い順)</option>
+            <option value="costLow">金額(低い順)</option>
+          </select>
 
           {/* 登録件数 */}
-          <div>
-            <span style={{ fontSize: "20px" }}>全{subscList.length}件</span>
+          <div
+            style={{
+              fontSize: "16px",
+              fontWeight: 500,
+              textAlign: "right",
+              marginTop: "8px",
+            }}
+          >
+            全 {subscList.length} 件
           </div>
         </div>
 

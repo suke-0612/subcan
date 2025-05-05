@@ -1,96 +1,137 @@
 "use client";
 import { useState } from "react";
-import { loginWithGoogle, loginWithEmail } from "@/libs/firebase-auth";
-import Image from "next/image";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
-  const handleEmailLogin = async () => {
+
+  const handleRegister = async () => {
     setErrorMsg("");
     setLoading(true);
     try {
-      await loginWithEmail(email, password);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (_error) {
-      setErrorMsg("メールアドレスまたはパスワードが正しくありません");
+      // TODO: Implement the registration logic
+      console.log(email, password);
+    } catch (_error: unknown) {
+      if (_error instanceof Error) {
+        console.error(_error.message);
+      }
+      setErrorMsg("登録に失敗しました。入力内容をご確認ください。");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
-      <div
-        style={{
-          backgroundColor: "#fff",
-          paddingTop: "32px",
-          textAlign: "center",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: "0px",
-          }}
-        >
-          <div style={{ marginBottom: "24px" }}>
-            <input
-              type="email"
-              placeholder="メールアドレス"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px",
-                marginBottom: "8px",
-                borderRadius: "8px",
-                border: "1px solid #ccc",
-              }}
-            />
-            <input
-              type="password"
-              placeholder="パスワード"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "10px",
-                marginBottom: "0px",
-                borderRadius: "8px",
-                border: "1px solid #ccc",
-              }}
-            />
-          </div>
-        </div>
-      </div>
+    <div
+      style={{
+        padding: "32px",
+        width: "100%",
+        maxWidth: "400px",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* 戻る矢印 */}
       <div
         style={{
           display: "flex",
-          justifyContent: "center",
-          margin: 10,
+          justifyContent: "start",
+          marginBottom: "24px",
         }}
       >
         <button
+          onClick={() => window.history.back()}
           style={{
-            backgroundColor: "white",
-            border: "3px solid #3C6E71",
-            borderRadius: "7px ",
-            width: 150,
-            height: 40,
-            fontSize: 22,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "24px",
+            color: "#3C6E71",
           }}
         >
-          決定
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="feather feather-arrow-left"
+          >
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
         </button>
       </div>
+
+      <div
+        style={{
+          marginBottom: "24px",
+          textAlign: "center",
+        }}
+      >
+        <h2 style={{ fontSize: "24px", marginBottom: "8px" }}>
+          アカウント作成
+        </h2>
+        <p style={{ color: "#555" }}>はじめての方はこちらからご登録ください</p>
+      </div>
+
+      <input
+        type="email"
+        placeholder="メールアドレス"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "12px",
+          marginBottom: "12px",
+          borderRadius: "8px",
+          border: "1px solid #ccc",
+          fontSize: "16px",
+          boxSizing: "border-box",
+        }}
+      />
+      <input
+        type="password"
+        placeholder="パスワード"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "12px",
+          marginBottom: "16px",
+          borderRadius: "8px",
+          border: "1px solid #ccc",
+          fontSize: "16px",
+          boxSizing: "border-box",
+        }}
+      />
+
+      {errorMsg && (
+        <p style={{ color: "red", marginBottom: "12px" }}>{errorMsg}</p>
+      )}
+
+      <button
+        onClick={handleRegister}
+        disabled={loading}
+        style={{
+          width: "100%",
+          padding: "12px",
+          backgroundColor: "#3C6E71",
+          color: "#fff",
+          border: "none",
+          fontSize: "16px",
+          cursor: "pointer",
+          transition: "background-color 0.3s",
+          borderRadius: "24px",
+        }}
+      >
+        {loading ? "登録中..." : "アカウントを作成"}
+      </button>
     </div>
   );
 }

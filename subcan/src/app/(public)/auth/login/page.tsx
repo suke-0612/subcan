@@ -15,8 +15,10 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await loginWithEmail(email, password);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
+      if (_error instanceof Error) {
+        console.error(_error.message);
+      }
       setErrorMsg("メールアドレスまたはパスワードが正しくありません");
     } finally {
       setLoading(false);
@@ -24,149 +26,161 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        width: "100%",
+        maxWidth: "400px",
+        padding: "32px",
+      }}
+    >
+      {/* ロゴ */}
       <div
         style={{
-          backgroundColor: "#fff",
-          padding: "32px",
-          textAlign: "center",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: "24px",
         }}
       >
-        <div
+        <Image
+          width={48}
+          height={48}
+          src="/icon.png"
+          alt="Logo"
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: "32px",
+            borderRadius: "8px",
+            marginRight: "12px",
           }}
-        >
-          <div
-            style={{
-              width: "48px",
-              height: "48px",
-              backgroundColor: "#B35F5F",
-              borderRadius: "8px",
-              marginRight: "12px",
-            }}
-          />
-          <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>サブキャン</h1>
-        </div>
+        />
+        <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#284b63" }}>
+          サブキャン
+        </h1>
+      </div>
 
-        <p
+      <p
+        style={{
+          marginBottom: "16px",
+          textAlign: "center",
+          fontWeight: "bold",
+          fontSize: "18px",
+        }}
+      >
+        今すぐ参加しましょう
+      </p>
+
+      {/* Google ログイン */}
+      <button
+        onClick={loginWithGoogle}
+        style={{
+          width: "100%",
+          padding: "12px",
+          marginBottom: "16px",
+          borderRadius: "24px",
+          border: "1px solid #353535",
+          backgroundColor: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "16px",
+          cursor: "pointer",
+        }}
+      >
+        <Image
+          width={20}
+          height={20}
+          src="/google.png"
+          alt="Google"
+          style={{ marginRight: "8px" }}
+        />
+        Googleでログイン
+      </button>
+
+      <p style={{ textAlign: "center", margin: "16px 0" }}>または</p>
+
+      {/* メールアドレス・パスワード */}
+      <div>
+        <input
+          type="email"
+          placeholder="メールアドレス"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           style={{
-            marginBottom: "16px",
-            textAlign: "start",
-            fontWeight: "bold",
+            width: "100%",
+            padding: "10px",
+            marginBottom: "10px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            boxSizing: "border-box",
           }}
-        >
-          今すぐ参加しましょう
-        </p>
+        />
+        <input
+          type="password"
+          placeholder="パスワード"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "10px",
+            marginBottom: "16px",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            boxSizing: "border-box",
+          }}
+        />
 
         <button
-          onClick={loginWithGoogle}
+          onClick={handleEmailLogin}
+          disabled={loading}
           style={{
             width: "100%",
             padding: "12px",
-            marginBottom: "12px",
             borderRadius: "24px",
-            border: "1px solid #333",
-            backgroundColor: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            border: "none",
+            backgroundColor: "#3c6e71",
+            color: "#fff",
+            fontSize: "16px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          {loading ? "ログイン中..." : "メールアドレスでログイン"}
+        </button>
+
+        {errorMsg && (
+          <p style={{ color: "red", marginTop: "8px", textAlign: "center" }}>
+            {errorMsg}
+          </p>
+        )}
+      </div>
+
+      <hr style={{ margin: "24px 0", borderColor: "#d9d9d9" }} />
+
+      <p
+        style={{
+          marginBottom: "12px",
+          textAlign: "center",
+          fontWeight: "bold",
+        }}
+      >
+        初めての方はこちら
+      </p>
+
+      <Link href="/auth/register">
+        <button
+          style={{
+            width: "100%",
+            padding: "12px",
+            borderRadius: "24px",
+            border: "none",
+            backgroundColor: "#284b63",
+            color: "#fff",
             fontSize: "16px",
             cursor: "pointer",
           }}
         >
-          <Image
-            width={20}
-            height={20}
-            src="/images/google.png"
-            alt="Google"
-            style={{ width: "20px", height: "20px", marginRight: "8px" }}
-          />
-          Googleでログイン
+          アカウントを作成
         </button>
-
-        <p style={{ marginBottom: "12px" }}>または</p>
-
-        {/* メールアドレス認証フォーム */}
-        <div style={{ marginBottom: "24px" }}>
-          <input
-            type="email"
-            placeholder="メールアドレス"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginBottom: "8px",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-            }}
-          />
-          <input
-            type="password"
-            placeholder="パスワード"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "10px",
-              marginBottom: "8px",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-            }}
-          />
-          <button
-            onClick={handleEmailLogin}
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "12px",
-              borderRadius: "24px",
-              border: "1px solid #333",
-              backgroundColor: "#fff",
-              fontSize: "16px",
-              cursor: "pointer",
-            }}
-          >
-            {loading ? "ログイン中..." : "メールアドレスでログイン"}
-          </button>
-          {errorMsg && (
-            <p style={{ color: "red", marginTop: "8px" }}>{errorMsg}</p>
-          )}
-        </div>
-
-        <div>
-          <p
-            style={{
-              marginBottom: "12px",
-              textAlign: "start",
-              fontWeight: "bold",
-            }}
-          >
-            初めての方は
-          </p>
-        </div>
-
-        <Link href="/auth/register">
-          <button
-            style={{
-              width: "100%",
-              padding: "12px",
-              borderRadius: "24px",
-              border: "none",
-              backgroundColor: "#497171",
-              color: "#fff",
-              fontSize: "16px",
-              cursor: "pointer",
-            }}
-          >
-            アカウントを作成
-          </button>
-        </Link>
-      </div>
+      </Link>
     </div>
   );
 }
