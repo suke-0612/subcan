@@ -6,7 +6,7 @@ import {
   collection,
   addDoc,
   getDocs,
-  setDoc,
+  updateDoc,
   query,
   where,
   getDoc,
@@ -64,7 +64,8 @@ export const getsubscriptions = async (): Promise<CheckSubscription[]> => {
 };
 
 export const updateSubscription = async (id: string, value: number) => {
-  await setDoc(doc(db, "example_subscription", id), {
+  console.log("updateSubscription", id, value);
+  await updateDoc(doc(db, "subscriptions", id), {
     frequency: value,
   });
 };
