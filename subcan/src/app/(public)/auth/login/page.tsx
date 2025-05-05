@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { loginWithGoogle, loginWithEmail } from "@/libs/firebase-auth";
+import useFCM from "@/utils/hooks/useFCM";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,6 +10,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
+  const { messages, fcmToken } = useFCM();
+  console.log(`messages:`, messages);
 
   const handleEmailLogin = async () => {
     setErrorMsg("");
@@ -25,6 +28,8 @@ export default function LoginPage() {
 
   return (
     <div>
+      <p>fcmToken: {fcmToken === null ? "none" : fcmToken}</p>
+      <p>messages: {JSON.stringify(messages)}</p>
       <div
         style={{
           backgroundColor: "#fff",

@@ -1,3 +1,4 @@
+import { getMessaging, isSupported } from "firebase/messaging";
 import { getApps, initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -14,5 +15,15 @@ const firebaseConfig = {
 const app = getApps()?.length ? getApps()[0] : initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-export const provider = new GoogleAuthProvider(); //Googleログイン用
+export const provider = new GoogleAuthProvider(); // Googleログイン用
 export const db = getFirestore(app);
+
+// Firebase Cloud Messagingの初期化
+export const messaging = (await isSupported()) ? getMessaging(app) : null;
+isSupported().then((supported) => {
+  if (supported) {
+    console.log("Firebase Cloud Messaging is supported");
+  } else {
+    console.error("Firebase Cloud Messaging is not supported");
+  }
+});
