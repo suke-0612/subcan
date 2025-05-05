@@ -1,19 +1,47 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { getSubscription } from "@/libs/firestore";
+import { Subscription } from "@/types/Subscriptions";
+import { useSession } from "next-auth/react";
 
-const SubscriptionDetail = () => {
+type Props = {
+  subsc_id: string;
+};
+
+const SubscriptionDetail = ({ subsc_id }: Props) => {
+  const [info, setInfo] = useState<Subscription | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session?.user?.uid && subsc_id) {
+      getSubscription(session.user.uid, subsc_id).then(
+        (data) => {
+          setInfo(data);
+          setIsLoading(false);
+        },
+        (err) => {
+          console.error(err);
+          setIsLoading(false);
+        }
+      );
+    }
+  }, [session?.user?.uid, subsc_id]);
+
+  if (isLoading) return <div>読み込み中...</div>;
+  if (!info) return <div>情報が見つかりません。</div>;
+
   const basicInfo = [
-    { label: "金額", value: "内容----------" },
-    { label: "次の引き落とし日", value: "内容----------" },
-    { label: "最後の支払い日", value: "内容----------" },
-    { label: "利用頻度", value: "内容----------" },
-    { label: "項目", value: "内容----------" },
+    { label: "金額", value: info.fee ?? "未登録" },
+    { label: "次の引き落とし日", value: info.nextPayme ?? "未登録" },
+    { label: "最後の支払い日", value: info.lastPaymentDate ?? "未登録" },
+    { label: "利用頻度", value: info.frequency ?? "未登録" },
   ];
-  const firstInfo = [
-    { label: "項目", value: "内容----------" },
-    { label: "項目", value: "内容----------" },
-    { label: "項目", value: "内容----------" },
-  ];
+
+  // const firstInfo = [{ label: "登録日", value: info.created_at ?? "不明" }];
+
   return (
     <div style={{ padding: "16px", fontFamily: "sans-serif" }}>
       {/* サブスクヘッダー */}
@@ -46,12 +74,12 @@ const SubscriptionDetail = () => {
             borderRadius: "8px",
           }}
         >
-          サブスク名
+          {info.name}
         </div>
       </div>
 
       {/* 解約ボタン */}
-      <Link href="">
+      <Link href={info.cancelUrl ?? "#"}>
         <button
           style={{
             width: "100%",
@@ -69,74 +97,62 @@ const SubscriptionDetail = () => {
       </Link>
 
       {/* 基本情報 */}
-      <div
-        style={{
-          marginTop: "16px",
-          background: "#fff",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          padding: "12px",
-        }}
-      >
-        <h2 style={{ fontSize: "18px", marginBottom: "8px" }}>基本情報</h2>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <tbody>
-            {basicInfo.map((item) => (
-              <tr key={item.label}>
-                <th style={thStyle}>{item.label}</th>
-                <td style={tdStyle}>{item.value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* 最初に登録した情報 */}
-      <div
-        style={{
-          marginTop: "16px",
-          background: "#fff",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          padding: "12px",
-        }}
-      >
-        <h2 style={{ fontSize: "18px", marginBottom: "8px" }}>
-          最初に登録した情報
-        </h2>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <tbody>
-            {firstInfo.map((item) => (
-              <tr key={item.label}>
-                <th style={thStyle}>{item.label}</th>
-                <td style={tdStyle}>{item.value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <InfoTable title="基本情報" items={basicInfo} />
+      {/* <InfoTable title="最初に登録した情報" items={firstInfo} /> */}
 
       {/* 情報の修正ボタン */}
       <div
         style={{ marginTop: "24px", display: "flex", justifyContent: "center" }}
       >
-        <button
-          style={{
-            padding: "10px 24px",
-            border: "2px solid #3b5b63",
-            borderRadius: "10px",
-            background: "white",
-            color: "#3b5b63",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
-        >
-          情報の修正
-        </button>
+        <Link href={`/edit`}>
+          <button
+            style={{
+              padding: "10px 24px",
+              border: "2px solid #3b5b63",
+              borderRadius: "10px",
+              background: "white",
+              color: "#3b5b63",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            情報の修正
+          </button>
+        </Link>
       </div>
     </div>
   );
 };
+
+const InfoTable = ({
+  title,
+  items,
+}: {
+  title: string;
+  items: { label: string; value: string }[];
+}) => (
+  <div
+    style={{
+      marginTop: "16px",
+      background: "#fff",
+      border: "1px solid #ccc",
+      borderRadius: "8px",
+      padding: "12px",
+    }}
+  >
+    <h2 style={{ fontSize: "18px", marginBottom: "8px" }}>{title}</h2>
+    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <tbody>
+        {items.map((item) => (
+          <tr key={item.label}>
+            <th style={thStyle}>{item.label}</th>
+            <td style={tdStyle}>{item.value}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
 
 const thStyle = {
   padding: "8px",

@@ -109,3 +109,21 @@ export const getSubscription = async (
     return { id: snapshot.id, ...snapshot.data() } as Subscription;
   return undefined;
 };
+
+export const getSubscriptionsById = async (uid: string) => {
+  const snapshot = await getDocs(
+    query(collection(db, "subscriptions"), where("user_id", "==", uid))
+  );
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    name: doc.data().name,
+    fee: doc.data().fee,
+    payment_starts_at: doc.data().payment_starts_at,
+    payment_period: doc.data().payment_period,
+    last_payment_date: doc.data().last_payment_date,
+    frequency: doc.data().frequency,
+    icon: doc.data().icon,
+    is_trial_period: doc.data().is_trial_period,
+    cancel_url: doc.data().cancel_url,
+  }));
+};
