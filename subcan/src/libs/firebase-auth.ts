@@ -33,7 +33,7 @@ export function logout() {
   firebaseAuth
     .signOut()
     .then(() => {
-      signOutWithNextAuth({ callbackUrl: `/login` }); //ログアウト後に遷移する画面の指
+      signOutWithNextAuth({ callbackUrl: `/auth/login` }); //ログアウト後に遷移する画面の指
     })
     .catch((error) => {
       console.error("Error Sign Out with Google", error);
