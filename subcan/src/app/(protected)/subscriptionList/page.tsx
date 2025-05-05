@@ -60,7 +60,7 @@ const SubscriptionList: React.FC<Props> = () => {
   }
 
   return (
-    <div>
+    <div style={{ marginTop: "20px" }}>
       <div
         className="container"
         style={{ maxWidth: "330px", margin: "0 auto", padding: "0 16px" }}
