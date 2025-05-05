@@ -1,32 +1,61 @@
 import React from "react";
-
 // グラフに表示する用の簡易的なデータ
 export type PieData = {
   id: string;
+  icon: string;
   name: string;
   value: number;
 };
 
 const Card: React.FC<PieData> = (props) => {
   return (
-    <div>
-      <div style={{ display: "flex" }}>
-        {/* コンポーネントの内容をここに記述 */}
-        <img src="/globe.svg" alt="" style={{ width: "45px" }} />
-        <p style={{ color: "black", fontSize: "30px", marginLeft: "10px" }}>
-          {props.name}
-        </p>
-        <p style={{ fontSize: "30px", textAlign: "right", marginLeft: "80px" }}>
-          {props.value}
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <img
+            src={props.icon}
+            alt={`${props.name} icon`}
+            style={{
+              width: "48px",
+              height: "48px",
+              borderRadius: "8px",
+              marginRight: "12px",
+            }}
+          ></img>
+          <p style={{ color: "#333", fontSize: "20px", margin: 0 }}>
+            {props.name}
+          </p>
+        </div>
+        <p style={{ fontSize: "18px", fontWeight: "bold", margin: 0 }}>
+          ¥{props.value.toLocaleString()}
         </p>
       </div>
-      <a
-        href={"/detail/" + props.id}
-        style={{ color: "gray", marginLeft: "280px", fontSize: "20px" }}
-      >
-        詳細ページへ
-      </a>
-      <p style={{ border: "0.5px solid" }}></p>
+
+      <div style={{ textAlign: "right" }}>
+        <a
+          href={`/detail/${props.id}`}
+          style={{
+            color: "#3C6E71",
+            fontSize: "14px",
+            textDecoration: "underline",
+          }}
+        >
+          詳細ページへ
+        </a>
+        <p style={{ border: "0.5px solid" }}></p>
+      </div>
     </div>
   );
 };

@@ -1,43 +1,33 @@
 import React from "react";
+import { Subscription } from "@/types/Subscriptions";
 
-type Props = {
-  // Propsの型をここに定義
-  name: string;
-  price: number;
-  iconPath: string;
-};
-
-const Card: React.FC<Props> = (props) => {
+const Card: React.FC<Subscription> = (props) => {
   return (
-    <div
+    <a
+      href={props.id}
       style={{
         display: "flex",
         alignItems: "center",
-        border: "solid 1px",
         backgroundColor: "#353535",
-        width: "85%",
-        minHeight: "130px",
+        width: "100%",
+        minHeight: "120px",
         margin: "15px auto",
         borderRadius: "5px",
-        boxShadow: "3px 4px 4px rba(0,0,0,0.25)",
+        textDecoration: "none",
       }}
     >
       {/* アイコン部分 */}
       <div
-        style={{
-          padding: "10px",
-          width: "40%",
-          textAlign: "center",
-          flex: 4,
-        }}
+        style={{ padding: "10px", width: "40%", textAlign: "center", flex: 4 }}
       >
         <img
-          src={props.iconPath}
-          alt="Netflix icon"
+          src={props.icon}
+          alt={`${props.name} icon`}
           style={{
             maxWidth: "80%",
             maxHeight: "80%",
             backgroundColor: "white",
+            borderRadius: "13px",
           }}
         />
       </div>
@@ -51,7 +41,14 @@ const Card: React.FC<Props> = (props) => {
           flex: 6,
         }}
       >
-        <span style={{ fontSize: "24px" }}>{props.name}</span>
+        <span
+          style={{
+            fontSize: props.name.length <= 20 ? 23 : 18,
+            wordBreak: "break-word",
+          }}
+        >
+          {props.name}
+        </span>
 
         <span
           style={{
@@ -60,10 +57,10 @@ const Card: React.FC<Props> = (props) => {
             display: "block",
           }}
         >
-          &yen;{props.price}
+          &yen;{props.fee.toLocaleString()}
         </span>
       </div>
-    </div>
+    </a>
   );
 };
 

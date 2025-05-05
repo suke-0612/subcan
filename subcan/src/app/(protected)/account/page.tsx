@@ -1,5 +1,6 @@
+"use client";
 import React from "react";
-import LogoutPage from "../logout/page";
+import { logout } from "@/libs/firebase-auth";
 
 type Props = {
   // Propsの型をここに定義
@@ -60,7 +61,7 @@ const MyComponent: React.FC<Props> = (props) => {
           height: "15vh",
         }}
       >
-        {/* <button
+        <button
           style={{
             opacity: 0.5,
             width: "80%",
@@ -73,10 +74,10 @@ const MyComponent: React.FC<Props> = (props) => {
             fontSize: "20px",
             fontWeight: "bold",
           }}
-          onClick={LogoutPage}
+          onClick={logout}
         >
-          ログアウト</button> */}
-        <LogoutPage />
+          ログアウト
+        </button>
       </div>
     </div>
   );

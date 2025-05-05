@@ -6,7 +6,7 @@ export interface Subscription {
   name: string; // サブスク名
   fee: number; // 料金
   payment_starts_at: Timestamp; // 支払い開始日
-  payment_period: string; // 支払い期間
+  payment_period: number; // 支払い期間
   last_payment_date: Timestamp | null; // 最後の支払日
   frequency: number; // ユーザーの利用頻度(値が大きいと頻度が少ない、小さいと頻度が多い)
   icon: string; // アイコンへのパス

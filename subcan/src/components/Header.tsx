@@ -35,9 +35,9 @@ function barStyle(open: boolean, index: number): React.CSSProperties {
   return common;
 }
 
-type Props = {};
+type Props = object;
 
-const Header: React.FC<Props> = (props) => {
+const Header: React.FC<Props> = () => {
   const [open, setOpen] = useState(false);
   const headerList = [
     { name: "一覧", path: "/" },
@@ -45,8 +45,6 @@ const Header: React.FC<Props> = (props) => {
     { name: "アカウント", path: "/account" },
     { name: "グラフ", path: "/graph" },
     { name: "サブスク仕分け", path: "/check" },
-    { name: "ログアウト", path: "/logout" },
-    { name: "詳細", path: "/detail" },
   ];
 
   return (
@@ -59,6 +57,7 @@ const Header: React.FC<Props> = (props) => {
           left: 0,
           padding: "24px 16px",
           width: "100%",
+          zIndex: 1000,
           backgroundColor: "#284B63",
         }}
       />
@@ -121,29 +120,6 @@ const Header: React.FC<Props> = (props) => {
             </Link>
           ))}
         </div>
-        {/* <div style={{ textAlign: "center", color: "black", marginTop: "40px" }}>
-          <p>
-            <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
-              一覧
-            </Link>
-          </p>
-          <p>
-            <Link
-              href="/register"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              サブスク登録
-            </Link>
-          </p>
-          <p>
-            <Link
-              href="/account"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              アカウント
-            </Link>
-          </p>
-        </div> */}
       </nav>
     </div>
   );

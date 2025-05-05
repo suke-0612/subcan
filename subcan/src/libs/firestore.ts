@@ -1,4 +1,3 @@
-import { subscribe } from "diagnostics_channel";
 import { db } from "./firebase";
 import { Subscription } from "@/types/Subscriptions";
 import { CheckSubscription } from "@/types/Subscriptions";
@@ -6,12 +5,13 @@ import {
   collection,
   addDoc,
   getDocs,
-  setDoc,
+  updateDoc,
   query,
   where,
   getDoc,
   doc,
 } from "firebase/firestore";
+import { ExampleSubscription } from "@/types/ExampleSubscription";
 
 // FireStoreを操作する関数はここに書く
 
@@ -50,7 +50,6 @@ export const getUsers = async () => {
 
 export const getsubscriptions = async (): Promise<CheckSubscription[]> => {
   const snapshot = await getDocs(collection(db, "subscriptions"));
-  snapshot.docs.map((doc) => console.log(doc.data()));
   return snapshot.docs.map(
     (doc) =>
       ({
@@ -63,7 +62,7 @@ export const getsubscriptions = async (): Promise<CheckSubscription[]> => {
 };
 
 export const updateSubscription = async (id: string, value: number) => {
-  await setDoc(doc(db, "example_subscription", id), {
+  await updateDoc(doc(db, "subscriptions", id), {
     frequency: value,
   });
 };
@@ -126,4 +125,17 @@ export const getSubscriptionsById = async (uid: string) => {
     is_trial_period: doc.data().is_trial_period,
     cancel_url: doc.data().cancel_url,
   }));
+};
+
+// サブスク例の一括取得
+export const getExampleSubscription = async (): Promise<
+  ExampleSubscription[]
+> => {
+  const snapshot = await getDocs(collection(db, "example_subscription"));
+  return snapshot.docs.map(
+    (doc) =>
+      ({
+        ...doc.data(),
+      } as ExampleSubscription)
+  );
 };
