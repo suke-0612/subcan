@@ -35,9 +35,9 @@ const SubscriptionDetail = ({ subsc_id }: Props) => {
 
   const stringFrequency = (frequency: number) => {
     if (frequency === 0) return "毎日";
-    if (frequency === 1) return "週に1回";
-    if (frequency === 2) return "月に1回";
-    if (frequency === 3) return "年に1回";
+    if (frequency === 1) return "週に数回";
+    if (frequency === 2) return "月に数回";
+    if (frequency === 3) return "年に数回";
     if (frequency === 4) return "使用していない";
     return "不明";
   };
