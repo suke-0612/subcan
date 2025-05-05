@@ -1,8 +1,7 @@
 interface ExampleSubscription {
   name: string;
   fee: number;
-  period: string;
-  paymentPeriod: string;
+  payment_period: string;
   icon: string;
-  trialPeriod: string;
+  trial_period: string;
 }

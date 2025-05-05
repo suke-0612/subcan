@@ -8,7 +8,7 @@ export const addUser = async (name: string, email: string) => {
   const docRef = await addDoc(collection(db, "users"), {
     name,
     email,
-    createdAt: new Date(),
+    created_at: new Date(),
   });
   return docRef.id;
 };
@@ -20,6 +20,6 @@ export const getUsers = async () => {
     id: doc.id,
     name: doc.data().name,
     email: doc.data().email,
-    createdAt: doc.data().createdAt,
+    created_at: doc.data().createdAt,
   }));
 };
