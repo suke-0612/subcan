@@ -1,9 +1,12 @@
+"use client";
 // Next.js のルーター機能を使うためのフック
 // import { useRouter } from "next/router";
 // // Firebase Authentication からログアウトするための関数
 // import { signOut } from "firebase/auth";
 // // 初期化済みの Firebase 認証オブジェクト
 // import { auth } from "@/libs/firebase";
+
+import { logout } from "@/libs/firebase-auth";
 
 // ログアウトページ用の React コンポーネント
 export default function LogoutPage() {
@@ -38,7 +41,7 @@ export default function LogoutPage() {
         fontSize: "20px",
         fontWeight: "bold",
       }}
-      //   onClick={doLogout}
+      onClick={logout}
     >
       ログアウト
     </button>
