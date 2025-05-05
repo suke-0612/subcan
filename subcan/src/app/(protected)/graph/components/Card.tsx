@@ -1,12 +1,13 @@
 import React from "react";
 
-type Props = {
-  // Propsの型をここに定義
+// グラフに表示する用の簡易的なデータ
+export type PieData = {
+  id: string;
   name: string;
-  price: number;
+  value: number;
 };
 
-const Card: React.FC<Props> = (props) => {
+const Card: React.FC<PieData> = (props) => {
   return (
     <div>
       <div style={{ display: "flex" }}>
@@ -16,11 +17,11 @@ const Card: React.FC<Props> = (props) => {
           {props.name}
         </p>
         <p style={{ fontSize: "30px", textAlign: "right", marginLeft: "80px" }}>
-          {props.price}
+          {props.value}
         </p>
       </div>
       <a
-        href={"https://www.google.co.jp"}
+        href={"/detail/" + props.id}
         style={{ color: "gray", marginLeft: "280px", fontSize: "20px" }}
       >
         詳細ページへ
