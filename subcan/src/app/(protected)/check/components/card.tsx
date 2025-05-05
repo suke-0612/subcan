@@ -1,4 +1,3 @@
-import { Kosugi_Maru } from "next/font/google";
 import React from "react";
 
 type Props = {

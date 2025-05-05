@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,6 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       // TODO: Implement the registration logic
-      console.log(email, password);
     } catch (_error: unknown) {
       if (_error instanceof Error) {
         console.error(_error.message);
@@ -40,14 +40,12 @@ export default function RegisterPage() {
           marginBottom: "24px",
         }}
       >
-        <button
-          onClick={() => window.history.back()}
+        <Link
+          href="/auth/login"
           style={{
-            background: "none",
-            border: "none",
+            textDecoration: "none",
+            color: "inherit",
             cursor: "pointer",
-            fontSize: "24px",
-            color: "#3C6E71",
           }}
         >
           <svg
@@ -65,7 +63,7 @@ export default function RegisterPage() {
             <line x1="19" y1="12" x2="5" y2="12"></line>
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
-        </button>
+        </Link>
       </div>
 
       <div

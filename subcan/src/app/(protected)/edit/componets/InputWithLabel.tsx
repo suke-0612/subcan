@@ -1,6 +1,4 @@
 import React from "react";
-import { Label } from "recharts";
-import { InputType } from "zlib";
 
 type Props = {
   // Propsの型をここに定義

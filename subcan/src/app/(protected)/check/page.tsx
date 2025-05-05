@@ -1,21 +1,14 @@
 "use client";
-import { Kosugi_Maru } from "next/font/google";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Card from "./components/card";
 import FrequencyButton from "./components/frequency_button";
-import {
-  addExampleSubscription,
-  getsubscriptions,
-  updateSubscription,
-} from "@/libs/firestore";
+import { getsubscriptions, updateSubscription } from "@/libs/firestore";
 import { CheckSubscription } from "@/types/Subscriptions";
 import Link from "next/link";
 
-type Props = {
-  // Propsの型をここに定義
-};
+type Props = object;
 
-const MyComponent: React.FC<Props> = (props) => {
+const CheckPage: React.FC<Props> = () => {
   const [subscriptions, setSubscriptions] = React.useState<CheckSubscription[]>(
     []
   );
@@ -24,8 +17,16 @@ const MyComponent: React.FC<Props> = (props) => {
   const [fee, setFee] = React.useState(0);
   const [icon, setIcon] = React.useState("");
 
+  const buttonList = [
+    { name: "毎日", value: 1 },
+    { name: "週に数回", value: 2 },
+    { name: "月に数回", value: 3 },
+    { name: "年に数回", value: 4 },
+    { name: "最近使ってない", value: 5 },
+  ];
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    let value = Number(event.currentTarget.value) as number;
+    const value = Number(event.currentTarget.value) as number;
     setListIndex(listIndex + 1);
     setName(subscriptions[listIndex].name);
     setFee(subscriptions[listIndex].fee);
@@ -102,30 +103,17 @@ const MyComponent: React.FC<Props> = (props) => {
             使用頻度を選択してください
           </h1>
         </div>
-        <FrequencyButton content={"毎日"} value={0} handleClick={handleClick} />
-        <FrequencyButton
-          content={"週に数回"}
-          value={1}
-          handleClick={handleClick}
-        />
-        <FrequencyButton
-          content={"月に数回"}
-          value={2}
-          handleClick={handleClick}
-        />
-        <FrequencyButton
-          content={"年に数回"}
-          value={3}
-          handleClick={handleClick}
-        />
-        <FrequencyButton
-          content={"最近使ってない"}
-          value={4}
-          handleClick={handleClick}
-        />
+        {buttonList.map((button) => (
+          <FrequencyButton
+            key={button.value}
+            content={button.name}
+            value={button.value}
+            handleClick={handleClick}
+          />
+        ))}
       </div>
     );
   }
 };
 
-export default MyComponent;
+export default CheckPage;

@@ -7,6 +7,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import Card from "@/components/Card";
 import Loading from "@/components/Loading";
+import { Timestamp } from "firebase/firestore";
 
 type Props = object;
 
@@ -30,21 +31,29 @@ const SubscriptionList: React.FC<Props> = () => {
     }
   }, [session?.user?.uid]);
 
-  const sortedSubscList = (() => {
+  const sortedSubscList = React.useMemo(() => {
     if (!subscList) return [];
-    if (sortOption === "")
-      return subscList.sort(
-        (a, b) => a.created_at.toMillis() - b.created_at.toMillis()
-      );
-    if (sortOption === "freqHi")
-      return subscList.sort((a, b) => a.frequency - b.frequency);
-    if (sortOption === "freqLow")
-      return subscList.sort((a, b) => b.frequency - a.frequency);
-    if (sortOption === "costHi") return subscList.sort((a, b) => b.fee - a.fee);
-    if (sortOption === "costLow")
-      return subscList.sort((a, b) => a.fee - b.fee);
-    return subscList;
-  })();
+
+    // コピーしてからソートしないとwarningが出る
+    const listCopy = [...subscList];
+
+    switch (sortOption) {
+      case "freqHi":
+        return listCopy.sort((a, b) => a.frequency - b.frequency);
+      case "freqLow":
+        return listCopy.sort((a, b) => b.frequency - a.frequency);
+      case "costHi":
+        return listCopy.sort((a, b) => b.fee - a.fee);
+      case "costLow":
+        return listCopy.sort((a, b) => a.fee - b.fee);
+      default:
+        return listCopy.sort(
+          (a, b) =>
+            (a.created_at as Timestamp).toMillis() -
+            (b.created_at as Timestamp).toMillis()
+        );
+    }
+  }, [subscList, sortOption]);
 
   if (!subscList) {
     return <Loading />;

@@ -6,24 +6,7 @@ import GoogleCalendarButton from "@/components/GoogleComponentButton";
 
 type Props = object; // Propsの型をここに定義
 
-const formDivStyle = {
-  color: "gray",
-  width: "300px",
-  padding: "10px",
-  borderRadius: "10px",
-  marginBottom: "15px",
-  margin: "auto",
-};
-
-const selectDivStyle = {
-  width: "80%",
-  height: "40px",
-  padding: "10px",
-  borderRadius: "8px",
-  marginBottom: "15px",
-};
-
-const MyComponent: React.FC<Props> = () => {
+const RegisterPage: React.FC<Props> = () => {
   const [exampleSubscriptions, setExampleSubscriptions] = useState<
     ExampleSubscription[]
   >([]);
@@ -32,9 +15,7 @@ const MyComponent: React.FC<Props> = () => {
   const [paymentPeriod, setPaymentPeriod] = useState("");
   const [fee, setFee] = useState("");
   const [freq, setFreq] = useState("");
-
   const handleChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
     const value = Number(e.target.value);
     setSelectedIndex(value);
 
@@ -56,7 +37,6 @@ const MyComponent: React.FC<Props> = () => {
   useEffect(() => {
     getExampleSubscription().then(
       (data) => {
-        console.log(data);
         setExampleSubscriptions(
           data
             .filter((elem) => elem.name)
@@ -67,43 +47,60 @@ const MyComponent: React.FC<Props> = () => {
     );
   }, []);
 
-  const formData = [
-    { label: "サブスク名", value: "" },
-    { label: "サブスク期間", value: "" },
-    { label: "金額", value: "" },
-    { label: "更新頻度", value: "" },
-    { label: "利用頻度", value: "" },
-  ];
+  // Google Calendar Buttonのためのダミーデータ
   const eventTitle = "打ち合わせ";
   const description = "クライアントとの定例ミーティング";
   const location = "Zoom";
   const start = new Date("2025-05-10T15:00:00+09:00");
   const end = new Date("2025-05-10T16:00:00+09:00");
 
+  const selectDivStyle: React.CSSProperties = {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "8px 10px",
+    borderRadius: "6px",
+    border: "1.5px solid #ccc",
+    fontSize: "16px",
+    marginTop: "8px",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: "15px",
+    fontWeight: "bold",
+    marginBottom: "4px",
+  };
+
+  const sectionStyle: React.CSSProperties = {
+    marginBottom: "20px",
+  };
+
   return (
-    <div style={{ paddingTop: "30px" }}>
+    <div>
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
+          margin: "0 auto",
+          padding: "24px",
         }}
       >
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+          サブスク登録
+        </h2>
+
         {/* セレクタ */}
-        <h3 style={{ marginLeft: "20px" }}>どのサブスクを登録しますか？</h3>
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "300px",
-            padding: "10px",
-            borderRadius: "10px",
-            marginBottom: "15px",
+            marginBottom: "20px",
           }}
         >
+          <label
+            style={{
+              fontSize: "15px",
+              fontWeight: "bold",
+              marginBottom: "4px",
+            }}
+          >
+            どのサブスクを登録しますか？
+          </label>
           <select
             style={selectDivStyle}
             value={selectedIndex}
@@ -116,107 +113,93 @@ const MyComponent: React.FC<Props> = () => {
               </option>
             ))}
           </select>
-
-          <div style={formDivStyle}>
-            サブスク名
-            <input
-              type="text"
-              style={{
-                display: "block",
-                width: "80%",
-                height: "35px",
-                borderRadius: "5px",
-                border: "2px solid brack",
-                padding: "5px",
-              }}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          <div style={formDivStyle}>
-            支払い頻度
-            <select
-              style={selectDivStyle}
-              value={paymentPeriod}
-              onChange={(e) => setPaymentPeriod(e.target.value)}
-            >
-              <option value="1">１か月</option>
-              <option value="2">３か月</option>
-              <option value="3">６か月</option>
-              <option value="4">１２か月</option>
-            </select>
-          </div>
-
-          <div style={formDivStyle}>
-            金額
-            <input
-              type="number"
-              style={{
-                display: "block",
-                width: "80%",
-                height: "35px",
-                borderRadius: "5px",
-                border: "2px solid brack",
-                padding: "5px",
-              }}
-              value={fee}
-              onChange={(e) => setFee(e.target.value)}
-            />
-          </div>
-
-          <div style={formDivStyle}>
-            利用頻度
-            <br />
-            <select
-              style={selectDivStyle}
-              value={freq}
-              onChange={(e) => setFreq(e.target.value)}
-            >
-              <option value="">選択してください</option>
-              <option value="1">毎日</option>
-              <option value="2">週に数回</option>
-              <option value="3">一か月に数回</option>
-              <option value="4">一年に数回</option>
-            </select>
-          </div>
         </div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: 10,
-          marginBottom: 30,
-        }}
-      >
-        <GoogleCalendarButton
-          title={eventTitle}
-          description={description}
-          location={location}
-          startTime={start}
-          endTime={end}
-        />
-      </div>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          style={{
-            backgroundColor: "white",
-            border: "3px solid #3C6E71",
-            borderRadius: "7px ",
-            width: 150,
-            height: 40,
-            fontSize: 22,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          登録
-        </button>
+
+        {/* サブスク名 */}
+        <div style={sectionStyle}>
+          <label style={labelStyle}>サブスク名</label>
+          <input
+            type="text"
+            style={selectDivStyle}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        {/* 支払い頻度 */}
+        <div style={sectionStyle}>
+          <label style={labelStyle}>支払い頻度</label>
+          <select
+            style={selectDivStyle}
+            value={paymentPeriod}
+            onChange={(e) => setPaymentPeriod(e.target.value)}
+          >
+            <option value="1">１か月</option>
+            <option value="2">３か月</option>
+            <option value="3">６か月</option>
+            <option value="4">１２か月</option>
+          </select>
+        </div>
+
+        {/* 金額 */}
+        <div style={sectionStyle}>
+          <label style={labelStyle}>金額 (円)</label>
+          <input
+            type="number"
+            style={selectDivStyle}
+            value={fee}
+            onChange={(e) => setFee(e.target.value)}
+          />
+        </div>
+
+        {/* 利用頻度 */}
+        <div style={sectionStyle}>
+          <label style={labelStyle}>利用頻度</label>
+          <select
+            style={selectDivStyle}
+            value={freq}
+            onChange={(e) => setFreq(e.target.value)}
+          >
+            <option value="">選択してください</option>
+            <option value="1">毎日</option>
+            <option value="2">週に数回</option>
+            <option value="3">一か月に数回</option>
+            <option value="4">一年に数回</option>
+          </select>
+        </div>
+
+        {/* Google Calendar Button */}
+        <div style={{ textAlign: "right", marginBottom: "16px" }}>
+          <GoogleCalendarButton
+            title={eventTitle}
+            description={description}
+            location={location}
+            startTime={start}
+            endTime={end}
+          />
+        </div>
+
+        {/* 登録ボタン */}
+        <div style={{ textAlign: "center" }}>
+          <button
+            style={{
+              backgroundColor: "#3C6E71",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              width: "100%",
+              height: "44px",
+              fontSize: "18px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              transition: "background 0.3s",
+            }}
+          >
+            登録
+          </button>
+        </div>
       </div>
     </div>
   );
 };
-
-export default MyComponent;
+export default RegisterPage;

@@ -45,7 +45,6 @@ const Header: React.FC<Props> = () => {
     { name: "アカウント", path: "/account" },
     { name: "グラフ", path: "/graph" },
     { name: "サブスク仕分け", path: "/check" },
-    { name: "詳細", path: "/detail" },
   ];
 
   return (

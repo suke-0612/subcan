@@ -1,4 +1,3 @@
-import { subscribe } from "diagnostics_channel";
 import { db } from "./firebase";
 import { Subscription } from "@/types/Subscriptions";
 import { CheckSubscription } from "@/types/Subscriptions";
@@ -51,7 +50,6 @@ export const getUsers = async () => {
 
 export const getsubscriptions = async (): Promise<CheckSubscription[]> => {
   const snapshot = await getDocs(collection(db, "subscriptions"));
-  snapshot.docs.map((doc) => console.log(doc.data()));
   return snapshot.docs.map(
     (doc) =>
       ({
@@ -64,7 +62,6 @@ export const getsubscriptions = async (): Promise<CheckSubscription[]> => {
 };
 
 export const updateSubscription = async (id: string, value: number) => {
-  console.log("updateSubscription", id, value);
   await updateDoc(doc(db, "subscriptions", id), {
     frequency: value,
   });
