@@ -1,6 +1,6 @@
 import React from "react";
-import doLogout from "./test/logout";
-import LogoutPage from "./test/logout";
+// import doLogout from "./test/logout";
+// import LogoutPage from "./test/logout";
 
 type Props = {};
 
@@ -149,7 +149,7 @@ const MyComponent: React.FC<Props> = (props) => {
         >
           ログアウト
         </button> */}
-        <LogoutPage />
+        {/* <LogoutPage /> */}
       </div>
     </div>
   );

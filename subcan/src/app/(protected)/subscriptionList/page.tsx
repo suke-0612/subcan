@@ -10,7 +10,7 @@ import { useState } from "react";
 const Card: React.FC<Subscription> = (props) => {
   return (
     <a
-      href={"/subscription/" + props.name}
+      href={`/${props.id}`}
       style={{
         display: "flex",
         alignItems: "center",
