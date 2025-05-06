@@ -8,7 +8,7 @@ interface PageProps {
   };
 }
 
-export default async function DetailPage({ params }: PageProps) {
+export default async function DetailPage({ params }: any) {
   const { uuid } = await params;
 
   if (!uuid) {
