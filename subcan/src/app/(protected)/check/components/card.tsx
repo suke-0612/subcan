@@ -31,15 +31,33 @@ const Card: React.FC<Props> = (props) => {
           flex: 4,
         }}
       >
-        <img
-          src={props.iconPath}
-          alt="Netflix icon"
-          style={{
-            maxWidth: "80%",
-            maxHeight: "80%",
-            backgroundColor: "white",
-          }}
-        />
+        {props.iconPath && (
+          <img
+            src={props.iconPath}
+            alt="サブスクアイコン"
+            style={{
+              maxWidth: "80%",
+              maxHeight: "80%",
+              backgroundColor: "white",
+            }}
+          />
+        )}
+        {!props.iconPath && (
+          <div
+            style={{
+              color: "white",
+              fontSize: "20px",
+              width: "90px",
+              height: "90px",
+              marginLeft: "auto",
+              backgroundColor: "#3c6e71",
+            }}
+          >
+            <p style={{ margin: "0 auto", fontSize: "50px" }}>
+              {props.name[0]}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* サブスク名・金額部分 */}

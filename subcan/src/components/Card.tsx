@@ -20,16 +20,34 @@ const Card: React.FC<Subscription> = (props) => {
       <div
         style={{ padding: "10px", width: "40%", textAlign: "center", flex: 4 }}
       >
-        <img
-          src={props.icon}
-          alt={`${props.name} icon`}
-          style={{
-            maxWidth: "80%",
-            maxHeight: "80%",
-            backgroundColor: "white",
-            borderRadius: "13px",
-          }}
-        />
+        {props.icon && (
+          <img
+            src={props.icon}
+            alt={`${props.name} icon`}
+            style={{
+              maxWidth: "80%",
+              maxHeight: "80%",
+              backgroundColor: "white",
+              borderRadius: "13px",
+            }}
+          />
+        )}
+        {!props.icon && (
+          <div
+            style={{
+              color: "white",
+              fontSize: "20px",
+              width: "90px",
+              height: "90px",
+              marginLeft: "auto",
+              backgroundColor: "#3c6e71",
+            }}
+          >
+            <p style={{ margin: "0 auto", fontSize: "50px" }}>
+              {props.name[0]}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* サブスク名・金額部分 */}
