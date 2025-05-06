@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { registerWithEmail } from "@/libs/firebase-auth";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       // TODO: Implement the registration logic
+      await registerWithEmail(email, password);
     } catch (_error: unknown) {
       if (_error instanceof Error) {
         console.error(_error.message);
