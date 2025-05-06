@@ -1,5 +1,5 @@
 import { db, messaging } from "./firebase";
-import { Subscription } from "@/types/Subscriptions";
+import { EditSubscription, Subscription } from "@/types/Subscriptions";
 import { CheckSubscription } from "@/types/Subscriptions";
 import {
   collection,
@@ -67,6 +67,18 @@ export const getsubscriptions = async (): Promise<CheckSubscription[]> => {
 export const updateSubscription = async (id: string, value: number) => {
   await updateDoc(doc(db, "subscriptions", id), {
     frequency: value,
+  });
+};
+
+// サブスクデータの編集
+export const changeSubscriptionInfo = async (fixInfo: EditSubscription) => {
+  const data = Object.fromEntries(
+    Object.entries(fixInfo).filter(([, v]) => v !== undefined)
+  );
+
+  await updateDoc(doc(db, "subscriptions", fixInfo.id), {
+    ...data,
+    updated_at: new Date(),
   });
 };
 
