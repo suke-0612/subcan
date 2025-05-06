@@ -107,17 +107,28 @@ const Header: React.FC<Props> = () => {
           }}
         >
           {headerList.map((item, index) => (
-            <Link
+            <div
               key={index}
-              href={item.path}
+              onClick={() => setOpen(false)}
               style={{
-                textDecoration: "none",
-                color: "inherit",
-                marginBottom: "20px",
+                width: "100%",
+                borderBottom: "1px solid #999",
+                paddingBottom: "10px",
+                marginBottom: "10px",
               }}
             >
-              {item.name}
-            </Link>
+              <Link
+                href={item.path}
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                  display: "inline-block",
+                  width: "100%",
+                }}
+              >
+                {item.name}
+              </Link>
+            </div>
           ))}
         </div>
       </nav>
