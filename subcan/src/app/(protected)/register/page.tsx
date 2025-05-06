@@ -5,6 +5,7 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import GoogleCalendarButton from "@/components/GoogleComponentButton";
 import { useSession } from "next-auth/react";
 import { Timestamp } from "firebase/firestore";
+import Link from "next/link";
 
 type Props = object; // Propsの型をここに定義
 
@@ -240,9 +241,9 @@ const RegisterPage: React.FC<Props> = () => {
             onChange={(e) => setPaymentStartsAt(e.target.value)}
           />
         </div>
-        {/* 次の引き落とし日 */}
+        {/* 最後の引き落とし日 */}
         <div style={sectionStyle}>
-          <label style={labelStyle}>次の引き落とし日</label>
+          <label style={labelStyle}>最後の引き落とし日</label>
           <input
             type="date"
             style={selectDivStyle}
@@ -275,23 +276,25 @@ const RegisterPage: React.FC<Props> = () => {
         </div>
         {/* 登録ボタン */}
         <div style={{ textAlign: "center" }}>
-          <button
-            style={{
-              backgroundColor: "#3C6E71",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              width: "100%",
-              height: "44px",
-              fontSize: "18px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "background 0.3s",
-            }}
-            onClick={SubmitSubscription}
-          >
-            登録
-          </button>
+          <Link href="/">
+            <button
+              style={{
+                backgroundColor: "#3C6E71",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                width: "100%",
+                height: "44px",
+                fontSize: "18px",
+                fontWeight: "bold",
+                cursor: "pointer",
+                transition: "background 0.3s",
+              }}
+              onClick={SubmitSubscription}
+            >
+              登録
+            </button>
+          </Link>
         </div>
       </div>
     </div>

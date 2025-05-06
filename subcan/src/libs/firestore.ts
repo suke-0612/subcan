@@ -49,8 +49,12 @@ export const getUsers = async () => {
   }));
 };
 
-export const getsubscriptions = async (): Promise<CheckSubscription[]> => {
-  const snapshot = await getDocs(collection(db, "subscriptions"));
+export const getsubscriptions = async (
+  uid: string
+): Promise<CheckSubscription[]> => {
+  const snapshot = await getDocs(
+    query(collection(db, "subscriptions"), where("user_id", "==", uid))
+  );
   return snapshot.docs.map(
     (doc) =>
       ({

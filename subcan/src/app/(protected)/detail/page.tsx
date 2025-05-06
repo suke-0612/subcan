@@ -19,6 +19,23 @@ const SubscriptionDetail = ({ subsc_id }: Props) => {
   const { data: session } = useSession();
 
   useEffect(() => {
+    // 今日が最後の支払日超えていたら
+    const today = new Date();
+    if (info?.last_payment_date) {
+      const lastPaymentDate = info.last_payment_date.toDate();
+      if (today > lastPaymentDate) {
+        let newLastPaymentDate = calculateNextPaymentDate(
+          info.last_payment_date,
+          info.payment_period
+        );
+        let newPaymentDate = calculateNextPaymentDate(
+          info.last_payment_date,
+          info.payment_period
+        );
+      }
+    }
+  }, []);
+  useEffect(() => {
     if (session?.user?.uid && subsc_id) {
       getSubscription(session.user.uid, subsc_id).then(
         (data) => {

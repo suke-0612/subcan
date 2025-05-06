@@ -5,10 +5,13 @@ import FrequencyButton from "./components/frequency_button";
 import { getsubscriptions, updateSubscription } from "@/libs/firestore";
 import { CheckSubscription } from "@/types/Subscriptions";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 type Props = object;
 
 const CheckPage: React.FC<Props> = () => {
+  const { data: session } = useSession();
+  const uid = session?.user?.uid;
   const [subscriptions, setSubscriptions] = React.useState<CheckSubscription[]>(
     []
   );
@@ -35,7 +38,8 @@ const CheckPage: React.FC<Props> = () => {
   };
 
   useEffect(() => {
-    getsubscriptions().then((data: CheckSubscription[]) => {
+    if (!uid) return;
+    getsubscriptions(uid).then((data: CheckSubscription[]) => {
       setSubscriptions(data);
     });
   }, []);
