@@ -159,7 +159,7 @@ const SubscriptionDetail = ({ subsc_id }: Props) => {
       </div>
 
       {/* 解約ボタン */}
-      <Link href={info.cancel_url ?? "#"}>
+      <Link href={info.cancel_url ?? "#"} target="_blank">
         <button
           style={{
             width: "100%",
