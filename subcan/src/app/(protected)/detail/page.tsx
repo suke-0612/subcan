@@ -2,10 +2,10 @@
 import React from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { getSubscription } from "@/libs/firestore";
+import { getSubscription, changeSubscriptionInfo } from "@/libs/firestore";
 import { Subscription } from "@/types/Subscriptions";
 import { useEffect, useState } from "react";
-import { Timestamp } from "firebase-admin/firestore";
+import { Timestamp } from "firebase/firestore";
 import Card from "@/components/Card";
 import Loading from "@/components/Loading";
 
@@ -19,22 +19,30 @@ const SubscriptionDetail = ({ subsc_id }: Props) => {
   const { data: session } = useSession();
 
   useEffect(() => {
-    // 今日が最後の支払日超えていたら
+    if (!info?.last_payment_date) return;
+
     const today = new Date();
-    if (info?.last_payment_date) {
-      const lastPaymentDate = info.last_payment_date.toDate();
-      if (today > lastPaymentDate) {
-        let newLastPaymentDate = calculateNextPaymentDate(
-          info.last_payment_date,
-          info.payment_period
-        );
-        let newPaymentDate = calculateNextPaymentDate(
-          info.last_payment_date,
-          info.payment_period
-        );
-      }
+    const lastPaymentDate = info.last_payment_date.toDate();
+
+    if (today > lastPaymentDate) {
+      const newLastPaymentDate = calculateNextPaymentDate(
+        info.last_payment_date as Timestamp,
+        info.payment_period
+      );
+      const newPaymentDate = calculateNextPaymentDate(
+        newLastPaymentDate,
+        info.payment_period
+      );
+
+      const fixInfo = {
+        id: info.id,
+        last_payment_date: newLastPaymentDate,
+        next_payment_date: newPaymentDate,
+      };
+      changeSubscriptionInfo(fixInfo);
     }
-  }, []);
+  }, [info]);
+
   useEffect(() => {
     if (session?.user?.uid && subsc_id) {
       getSubscription(session.user.uid, subsc_id).then(
@@ -67,7 +75,7 @@ const SubscriptionDetail = ({ subsc_id }: Props) => {
   const calculateNextPaymentDate = (
     lastPaymentAt: Timestamp,
     paymentPeriod: number
-  ): string => {
+  ): Timestamp => {
     const startDate = lastPaymentAt.toDate();
     const nextPaymentDate = new Date(startDate);
 
@@ -82,7 +90,7 @@ const SubscriptionDetail = ({ subsc_id }: Props) => {
     const periodDays = daysMap[paymentPeriod] ?? 30;
     nextPaymentDate.setDate(startDate.getDate() + periodDays);
 
-    return nextPaymentDate.toLocaleDateString();
+    return Timestamp.fromDate(nextPaymentDate);
   };
 
   const basicInfo = [
@@ -90,7 +98,12 @@ const SubscriptionDetail = ({ subsc_id }: Props) => {
     {
       label: "次の引き落とし日",
       value: info.last_payment_date
-        ? calculateNextPaymentDate(info.last_payment_date, info.payment_period)
+        ? calculateNextPaymentDate(
+            info.last_payment_date as Timestamp,
+            info.payment_period
+          )
+            .toDate()
+            .toLocaleDateString()
         : "未登録",
     },
     {
