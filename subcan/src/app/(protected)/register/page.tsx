@@ -85,11 +85,16 @@ const RegisterPage: React.FC<Props> = () => {
   }, []);
 
   // Google Calendar Buttonのためのダミーデータ
-  const eventTitle = "打ち合わせ";
-  const description = "クライアントとの定例ミーティング";
-  const location = "Zoom";
-  const start = new Date("2025-05-10T15:00:00+09:00");
-  const end = new Date("2025-05-10T16:00:00+09:00");
+  const eventTitle = name ? `${name} の引き落とし日` : "サブスク引き落とし日";
+  const description = `この日は ${name || "サブスク"} の支払い日です。`;
+  const location = cancelUrl || "オンライン";
+  // Google Calendar ボタン用: 最後の引き落とし日を使ったイベント設定
+  const start = lastPaymentDate
+    ? new Date(`${lastPaymentDate}T09:00:00`) // 9:00に開始（任意）
+    : new Date();
+  const end = lastPaymentDate
+    ? new Date(`${lastPaymentDate}T09:30:00`) // 30分後に終了（任意）
+    : new Date();
 
   const selectDivStyle: React.CSSProperties = {
     width: "100%",

@@ -36,19 +36,24 @@ const GoogleCalendarButton: React.FC<GoogleCalendarButtonProps> = ({
 
   return (
     <button
-      style={{
-        backgroundColor: "white",
-        border: "3px solid #3C6E71",
-        borderRadius: "7px ",
-        width: 300,
-        height: 40,
-        fontSize: 22,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
       onClick={handleClick}
-      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      style={{
+        backgroundColor: "#3C6E71",
+        color: "white",
+        border: "none",
+        borderRadius: "8px",
+        padding: "10px 20px",
+        fontSize: "18px",
+        fontWeight: "bold",
+        cursor: "pointer",
+        transition: "background-color 0.3s",
+      }}
+      onMouseOver={(e) =>
+        ((e.target as HTMLButtonElement).style.backgroundColor = "#345c5e")
+      }
+      onMouseOut={(e) =>
+        ((e.target as HTMLButtonElement).style.backgroundColor = "#3C6E71")
+      }
     >
       Googleカレンダーに追加
     </button>
