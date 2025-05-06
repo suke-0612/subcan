@@ -2,9 +2,41 @@
 import Loading from "@/components/Loading";
 import { changeSubscriptionInfo, getSubscription } from "@/libs/firestore";
 import { EditSubscription } from "@/types/Subscriptions";
+import { Timestamp } from "@firebase/firestore";
 import { useSession } from "next-auth/react";
 import { redirect, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+
+const selectDivStyle: React.CSSProperties = {
+  width: "100%",
+  boxSizing: "border-box",
+  padding: "8px 10px",
+  borderRadius: "6px",
+  border: "1.5px solid #ccc",
+  fontSize: "16px",
+  marginTop: "8px",
+};
+
+const labelStyle: React.CSSProperties = {
+  fontSize: "15px",
+  fontWeight: "bold",
+  marginBottom: "4px",
+};
+
+const sectionStyle: React.CSSProperties = {
+  marginBottom: "20px",
+};
+
+const getDateString = (
+  date: Date | undefined,
+  disableSeconds?: boolean,
+  disableHour?: boolean
+): string =>
+  date
+    ? `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${(
+        "0" + date.getDate()
+      ).slice(-2)}`
+    : "";
 
 type Props = {
   // Propsの型をここに定義
@@ -14,7 +46,6 @@ const inputWithLabel: React.FC<Props> = (props) => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
-  const [prevData, setPrevData] = useState<EditSubscription>();
   const [edit, setEdit] = useState<EditSubscription>();
 
   const { data: session } = useSession();
@@ -24,10 +55,7 @@ const inputWithLabel: React.FC<Props> = (props) => {
 
     if (session?.user?.uid) {
       getSubscription(session.user.uid, id).then(
-        (data) => {
-          setEdit(data);
-          setPrevData(data);
-        },
+        (data) => setEdit(data),
         (err) => console.error(err)
       );
     }
@@ -36,30 +64,11 @@ const inputWithLabel: React.FC<Props> = (props) => {
   const handleEditInfo = () => {
     if (!edit || !session?.user?.uid) return;
 
+    console.log(edit);
     changeSubscriptionInfo(edit).then((_) => {
       // 詳細ページに戻る
       redirect("/" + id);
     });
-  };
-
-  const selectDivStyle: React.CSSProperties = {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "8px 10px",
-    borderRadius: "6px",
-    border: "1.5px solid #ccc",
-    fontSize: "16px",
-    marginTop: "8px",
-  };
-
-  const labelStyle: React.CSSProperties = {
-    fontSize: "15px",
-    fontWeight: "bold",
-    marginBottom: "4px",
-  };
-
-  const sectionStyle: React.CSSProperties = {
-    marginBottom: "20px",
   };
 
   if (!id) {
@@ -155,6 +164,61 @@ const inputWithLabel: React.FC<Props> = (props) => {
               e.target.value && setEdit({ ...edit, cancel_url: e.target.value })
             }
           />
+        </div>
+
+        {/* 開始日 */}
+        <div style={sectionStyle}>
+          <label style={labelStyle}>サブスク利用開始日</label>
+          <input
+            type="date"
+            style={selectDivStyle}
+            value={getDateString(edit?.payment_starts_at?.toDate())}
+            onChange={(e) =>
+              e.target.value &&
+              setEdit({
+                ...edit,
+                payment_starts_at: Timestamp.fromDate(new Date(e.target.value)),
+              })
+            }
+          />
+        </div>
+
+        {/* 最後の引き落とし日 */}
+        <div style={sectionStyle}>
+          <label style={labelStyle}>最後の引き落とし日</label>
+          <input
+            type="date"
+            style={selectDivStyle}
+            value={getDateString(edit?.last_payment_date?.toDate())}
+            onChange={(e) =>
+              setEdit({
+                ...edit,
+                last_payment_date: e.target.value
+                  ? Timestamp.fromDate(new Date(e.target.value))
+                  : null,
+              })
+            }
+          />
+        </div>
+
+        {/* 無料期間　*/}
+        <div style={sectionStyle}>
+          <label style={labelStyle}>無料期間ですか？</label>
+          <select
+            style={selectDivStyle}
+            value={edit?.is_trial_period ? "1" : "2"}
+            onChange={(e) =>
+              e.target.value &&
+              setEdit({
+                ...edit,
+                is_trial_period: e.target.value === "1" ? true : false,
+              })
+            }
+          >
+            <option value="">選択してください</option>
+            <option value="1">はい</option>
+            <option value="2">いいえ</option>
+          </select>
         </div>
 
         <br />
