@@ -1,4 +1,4 @@
-import { db } from "./firebase";
+import { db, messaging } from "./firebase";
 import { Subscription } from "@/types/Subscriptions";
 import { CheckSubscription } from "@/types/Subscriptions";
 import {
@@ -10,8 +10,11 @@ import {
   where,
   getDoc,
   doc,
+  setDoc,
+  arrayRemove,
 } from "firebase/firestore";
 import { ExampleSubscription } from "@/types/ExampleSubscription";
+import { deleteToken } from "firebase/messaging";
 
 // FireStoreを操作する関数はここに書く
 
@@ -138,4 +141,104 @@ export const getExampleSubscription = async (): Promise<
         ...doc.data(),
       } as ExampleSubscription)
   );
+};
+
+// FCMトークンの保存
+export const saveFCMToken = async (uid: string, token: string) => {
+  try {
+    if (!token) {
+      console.warn("FCMトークンが空のため保存をスキップします");
+      return false;
+    }
+
+    // ユーザードキュメントの参照を取得
+    const docRef = doc(db, "users", uid);
+
+    // ドキュメントの存在確認
+    const snapshot = await getDoc(docRef);
+
+    if (snapshot.exists()) {
+      // ドキュメントが存在する場合、現在のトークンリストを取得
+      const userData = snapshot.data();
+      const existingTokens = userData.fcmTokens || [];
+
+      // トークンが既に存在しない場合のみ追加
+      if (!existingTokens.includes(token)) {
+        await updateDoc(docRef, {
+          fcmTokens: [...existingTokens, token],
+          lastUpdated: new Date(),
+        });
+        console.log(`FCMトークンを追加しました: ${token}`);
+      } else {
+        console.log(`FCMトークンは既に存在します: ${token}`);
+      }
+    } else {
+      // ドキュメントが存在しない場合は新規作成
+      await setDoc(docRef, {
+        fcmTokens: [token],
+        createdAt: new Date(),
+        lastUpdated: new Date(),
+      });
+      console.log(`新規ユーザーにFCMトークンを保存しました: ${uid}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error("FCMトークン保存エラー:", error);
+    throw error;
+  }
+};
+
+export const removeFCMToken = async (uid: string, token: string) => {
+  try {
+    if (!token) {
+      console.warn("FCMトークンが空のため削除をスキップします");
+      return false;
+    }
+
+    // Firestoreからトークンを削除
+    const docRef = doc(db, "users", uid);
+    await updateDoc(docRef, {
+      fcmTokens: arrayRemove(token),
+      lastUpdated: new Date(),
+    });
+
+    // Firebase Messagingからトークンを削除（ブラウザ側）
+    if (messaging) {
+      await deleteToken(messaging);
+      console.log("ブラウザからFCMトークンを削除しました");
+    }
+
+    console.log(`ユーザー ${uid} のFCMトークン ${token} を削除しました`);
+    return true;
+  } catch (error) {
+    console.error("FCMトークン削除エラー:", error);
+    throw error;
+  }
+};
+
+export const removeAllFCMTokens = async (
+  uid: string,
+  currentToken?: string
+) => {
+  try {
+    // Firestoreからすべてのトークンを削除
+    const docRef = doc(db, "users", uid);
+    await updateDoc(docRef, {
+      fcmTokens: [],
+      lastUpdated: new Date(),
+    });
+
+    // 現在のデバイスのトークンがあれば、ブラウザからも削除
+    if (currentToken && messaging) {
+      await deleteToken(messaging);
+      console.log("ブラウザからFCMトークンを削除しました");
+    }
+
+    console.log(`ユーザー ${uid} のすべてのFCMトークンを削除しました`);
+    return true;
+  } catch (error) {
+    console.error("FCMトークン削除エラー:", error);
+    throw error;
+  }
 };

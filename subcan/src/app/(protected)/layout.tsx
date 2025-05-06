@@ -3,6 +3,7 @@ import { authOptions } from "@/libs/auth";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { ReactElement } from "react";
+import FCMTokenManager from "./_components/FCMTokenManager";
 
 const Layout = async ({ children }: { children: ReactElement }) => {
   const session = await getServerSession(authOptions);
@@ -11,6 +12,7 @@ const Layout = async ({ children }: { children: ReactElement }) => {
 
   return (
     <>
+      <FCMTokenManager />
       <Header />
       {children}
     </>

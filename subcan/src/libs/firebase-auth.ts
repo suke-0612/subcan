@@ -3,11 +3,13 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import { auth as firebaseAuth } from "./firebase";
+import { auth as firebaseAuth, messaging } from "./firebase";
 import {
   signIn as signInWithNextAuth,
   signOut as signOutWithNextAuth,
 } from "next-auth/react";
+import { getToken } from "firebase/messaging";
+import { removeFCMToken } from "./firestore";
 
 export function loginWithGoogle() {
   const provider = new GoogleAuthProvider();
@@ -29,15 +31,22 @@ export function loginWithGoogle() {
     });
 }
 
-export function logout() {
-  firebaseAuth
-    .signOut()
-    .then(() => {
-      signOutWithNextAuth({ callbackUrl: `/auth/login` }); //ログアウト後に遷移する画面の指
-    })
-    .catch((error) => {
-      console.error("Error Sign Out with Google", error);
-    });
+export async function logout() {
+  try {
+    const user = firebaseAuth.currentUser;
+
+    if (user && messaging) {
+      const token = await getToken(messaging);
+      if (token) {
+        await removeFCMToken(user.uid, token);
+      }
+    }
+
+    await firebaseAuth.signOut();
+    await signOutWithNextAuth({ callbackUrl: `/auth/login` });
+  } catch (error) {
+    console.error("ログアウト時のエラー:", error);
+  }
 }
 
 export async function loginWithEmail(email: string, password: string) {
