@@ -1,12 +1,37 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { logout } from "@/libs/firebase-auth";
+import { useRouter } from "next/navigation";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 type Props = {
   // Propsの型をここに定義
 };
 
 const MyComponent: React.FC<Props> = (props) => {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const auth = getAuth();
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const providers = user.providerData.map((p) => p.providerId);
+
+        if (providers.includes("google.com")) {
+          setEmail(user.email || "");
+        } else if (providers.includes("password")) {
+          router.push("/account2"); // メールログイン
+        } else {
+          router.push("/"); // その他またはエラー時にトップへ
+        }
+      } else {
+        router.push("/auth/login"); // 未ログイン
+      }
+    });
+  }, [router]);
+
   return (
     <div style={{ paddingTop: "30px", margin: "30px" }}>
       <h1 style={{ fontSize: "20px", textAlign: "left" }}>
@@ -18,7 +43,7 @@ const MyComponent: React.FC<Props> = (props) => {
           display: "flex",
           alignItems: "center",
           borderBottom: "2px solid black",
-          paddingBottom: "4px",
+          paddingBottom: "2px",
           width: "100%",
           maxWidth: "1000px",
           margin: "0 auto",
@@ -28,6 +53,7 @@ const MyComponent: React.FC<Props> = (props) => {
           htmlFor="email"
           style={{
             fontSize: "16px",
+            marginBottom: "1px",
             marginRight: "10px",
             whiteSpace: "nowrap",
             color: "gray",
@@ -36,21 +62,18 @@ const MyComponent: React.FC<Props> = (props) => {
         >
           メール
         </label>
-        <input
-          type="text"
-          value="example@example.com"
-          readOnly
-          // id="email"
-          // placeholder="example@example.com"
+        <h1
           style={{
             flex: 1,
             border: "none",
             outline: "none",
             fontSize: "16px",
-            padding: "4px 0",
+            padding: "2px 4px 0",
             backgroundColor: "transparent",
           }}
-        />
+        >
+          {email || "読み込み中..."}
+        </h1>
       </div>
 
       <div
