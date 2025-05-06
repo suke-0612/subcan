@@ -1,20 +1,30 @@
 "use client";
-import { getExampleSubscription } from "@/libs/firestore";
+import { getExampleSubscription, addSubscriptionInfo } from "@/libs/firestore";
 import { ExampleSubscription } from "@/types/ExampleSubscription";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import GoogleCalendarButton from "@/components/GoogleComponentButton";
+import { useSession } from "next-auth/react";
+import { Timestamp } from "firebase/firestore";
 
 type Props = object; // Propsの型をここに定義
 
 const RegisterPage: React.FC<Props> = () => {
+  const { data: session } = useSession();
+  const user_id = session?.user?.uid;
   const [exampleSubscriptions, setExampleSubscriptions] = useState<
     ExampleSubscription[]
   >([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [name, setName] = useState("");
-  const [paymentPeriod, setPaymentPeriod] = useState("");
-  const [fee, setFee] = useState("");
-  const [freq, setFreq] = useState("");
+  const [paymentPeriod, setPaymentPeriod] = useState(0);
+  const [fee, setFee] = useState(0);
+  const [freq, setFreq] = useState(0);
+  const [icon, setIcon] = useState("");
+  const [isTrialPeriod, setIsTrialPeriod] = useState(false);
+  const [paymentStartsAt, setPaymentStartsAt] = useState("");
+  const [lastPaymentDate, setLastPaymentDate] = useState("");
+  const [cancelUrl, setCancelUrl] = useState("");
+
   const handleChangeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const value = Number(e.target.value);
     setSelectedIndex(value);
@@ -23,15 +33,41 @@ const RegisterPage: React.FC<Props> = () => {
 
     if (value === -1) {
       setName("");
-      setPaymentPeriod("");
-      setFee("");
+      setPaymentPeriod(0);
+      setFee(0);
+      setIcon("");
+      setFreq(0);
+      setCancelUrl("");
       return;
     }
 
     setName(exampleSubscriptions[value].name);
-    // 一旦適当に分けます
+    setIcon(exampleSubscriptions[value].icon);
     setPaymentPeriod(exampleSubscriptions[value].payment_period);
-    setFee(exampleSubscriptions[value].fee.toString());
+    setFee(exampleSubscriptions[value].fee);
+  };
+
+  const SubmitSubscription = () => {
+    if (!user_id) {
+      console.error("ユーザーIDが取得できませんでした");
+      return;
+    }
+    const info = {
+      id: "",
+      user_id: user_id,
+      name: name,
+      fee: fee,
+      payment_starts_at: Timestamp.fromDate(new Date(paymentStartsAt)), // 支払開始日
+      payment_period: paymentPeriod, // 支払期間
+      last_payment_date: Timestamp.fromDate(new Date(lastPaymentDate)), // 最後の支払日
+      frequency: freq, // ユーザーの利用頻度
+      icon: icon,
+      is_trial_period: isTrialPeriod, // 無料期間
+      cancel_url: cancelUrl, // 解約先URL
+      created_at: Timestamp.fromDate(new Date()),
+      updated_at: Timestamp.fromDate(new Date()),
+    };
+    addSubscriptionInfo(info);
   };
 
   useEffect(() => {
@@ -85,7 +121,6 @@ const RegisterPage: React.FC<Props> = () => {
         <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
           サブスク登録
         </h2>
-
         {/* セレクタ */}
         <div
           style={{
@@ -114,7 +149,28 @@ const RegisterPage: React.FC<Props> = () => {
             ))}
           </select>
         </div>
-
+        {/* アイコン */}
+        {selectedIndex !== -1 && (
+          <div
+            style={{
+              padding: "10px",
+              width: "40%",
+              textAlign: "center",
+              flex: 4,
+            }}
+          >
+            <img
+              src={icon}
+              alt={`${name} icon`}
+              style={{
+                maxWidth: "80%",
+                maxHeight: "80%",
+                backgroundColor: "white",
+                borderRadius: "13px",
+              }}
+            />
+          </div>
+        )}
         {/* サブスク名 */}
         <div style={sectionStyle}>
           <label style={labelStyle}>サブスク名</label>
@@ -125,14 +181,13 @@ const RegisterPage: React.FC<Props> = () => {
             onChange={(e) => setName(e.target.value)}
           />
         </div>
-
         {/* 支払い頻度 */}
         <div style={sectionStyle}>
           <label style={labelStyle}>支払い頻度</label>
           <select
             style={selectDivStyle}
             value={paymentPeriod}
-            onChange={(e) => setPaymentPeriod(e.target.value)}
+            onChange={(e) => setPaymentPeriod(Number(e.target.value))}
           >
             <option value="1">１か月</option>
             <option value="2">３か月</option>
@@ -140,7 +195,6 @@ const RegisterPage: React.FC<Props> = () => {
             <option value="4">１２か月</option>
           </select>
         </div>
-
         {/* 金額 */}
         <div style={sectionStyle}>
           <label style={labelStyle}>金額 (円)</label>
@@ -148,17 +202,16 @@ const RegisterPage: React.FC<Props> = () => {
             type="number"
             style={selectDivStyle}
             value={fee}
-            onChange={(e) => setFee(e.target.value)}
+            onChange={(e) => setFee(Number(e.target.value))}
           />
         </div>
-
         {/* 利用頻度 */}
         <div style={sectionStyle}>
           <label style={labelStyle}>利用頻度</label>
           <select
             style={selectDivStyle}
             value={freq}
-            onChange={(e) => setFreq(e.target.value)}
+            onChange={(e) => setFreq(Number(e.target.value))}
           >
             <option value="">選択してください</option>
             <option value="1">毎日</option>
@@ -167,7 +220,49 @@ const RegisterPage: React.FC<Props> = () => {
             <option value="4">一年に数回</option>
           </select>
         </div>
-
+        {/* 解約URL */}
+        <div style={sectionStyle}>
+          <label style={labelStyle}>解約URL</label>
+          <input
+            type="string"
+            style={selectDivStyle}
+            value={cancelUrl}
+            onChange={(e) => setCancelUrl(e.target.value)}
+          />
+        </div>
+        {/* 開始日 */}
+        <div style={sectionStyle}>
+          <label style={labelStyle}>サブスク利用開始日</label>
+          <input
+            type="date"
+            style={selectDivStyle}
+            value={paymentStartsAt}
+            onChange={(e) => setPaymentStartsAt(e.target.value)}
+          />
+        </div>
+        {/* 次の引き落とし日 */}
+        <div style={sectionStyle}>
+          <label style={labelStyle}>次の引き落とし日</label>
+          <input
+            type="date"
+            style={selectDivStyle}
+            value={lastPaymentDate}
+            onChange={(e) => setLastPaymentDate(e.target.value)}
+          />
+        </div>
+        {/* 無料期間　*/}
+        <div style={sectionStyle}>
+          <label style={labelStyle}>無料期間ですか？</label>
+          <select
+            style={selectDivStyle}
+            value={isTrialPeriod ? "1" : "2"}
+            onChange={(e) => setIsTrialPeriod(e.target.value === "1")}
+          >
+            <option value="">選択してください</option>
+            <option value="1">はい</option>
+            <option value="2">いいえ</option>
+          </select>
+        </div>
         {/* Google Calendar Button */}
         <div style={{ textAlign: "right", marginBottom: "16px" }}>
           <GoogleCalendarButton
@@ -178,7 +273,6 @@ const RegisterPage: React.FC<Props> = () => {
             endTime={end}
           />
         </div>
-
         {/* 登録ボタン */}
         <div style={{ textAlign: "center" }}>
           <button
@@ -194,6 +288,7 @@ const RegisterPage: React.FC<Props> = () => {
               cursor: "pointer",
               transition: "background 0.3s",
             }}
+            onClick={SubmitSubscription}
           >
             登録
           </button>

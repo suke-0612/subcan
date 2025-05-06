@@ -1,6 +1,6 @@
 export interface ExampleSubscription {
   name: string;
   fee: number;
-  payment_period: string;
+  payment_period: number;
   icon: string;
 }

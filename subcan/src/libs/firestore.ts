@@ -15,7 +15,6 @@ import {
 } from "firebase/firestore";
 import { ExampleSubscription } from "@/types/ExampleSubscription";
 import { deleteToken } from "firebase/messaging";
-
 // FireStoreを操作する関数はここに書く
 
 // データの追加
@@ -27,7 +26,6 @@ export const addUser = async (name: string, email: string) => {
   });
   return docRef.id;
 };
-
 export const addExampleSubscription = async () => {
   const docRef = await addDoc(collection(db, "example_subscription"), {
     name: "Amazonprime",
@@ -85,19 +83,18 @@ export const changeSubscriptionInfo = async (fixInfo: EditSubscription) => {
 // サブスクデータの追加
 export const addSubscriptionInfo = async (new_subsc: Subscription) => {
   const docRef = await addDoc(collection(db, "subscriptions"), {
-    ...new_subsc,
-    // user_id: "jzsIxKYebKRTAxp0BxVCqfigRWy1",
-    // name: "YouTube Premium",
-    // fee: 2000,
-    // payment_starts_at: new Date("2025-05-20"), // 支払開始日
-    // payment_period: "30days", // 支払期間
-    // last_payment_date: null, // 最後の支払日
-    // frequency: 0, // ユーザーの利用頻度
-    // icon: "https://www.musicman.co.jp/wp-content/uploads/2025/01/a574a2288d048cfcfbfa05989c12c9bb.jpg", // icon
-    // is_trial_period: false, // 無料期間
-    // cancel_url: "https://google.com", // 解約先URL
-    // created_at: new Date(),
-    // updated_at: new Date(),
+    user_id: new_subsc.user_id, // ユーザーID
+    name: new_subsc.name, // サブスク名
+    fee: new_subsc.fee, // 料金
+    payment_starts_at: new_subsc.payment_starts_at, // 支払開始日
+    payment_period: new_subsc.payment_period, // 支払期間
+    last_payment_date: new_subsc.last_payment_date, // 最後の支払日
+    frequency: new_subsc.frequency, // ユーザーの利用頻度
+    icon: new_subsc.icon, // アイコンへのパス
+    is_trial_period: new_subsc.is_trial_period, // 無料期間か
+    cancel_url: new_subsc.cancel_url, // 解約先URL
+    created_at: new_subsc.created_at,
+    updated_at: new_subsc.updated_at,
   });
   return docRef.id;
 };
