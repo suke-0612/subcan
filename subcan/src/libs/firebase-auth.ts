@@ -1,4 +1,5 @@
 import {
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -70,6 +71,29 @@ export async function loginWithEmail(email: string, password: string) {
   } catch (error) {
     console.error("Error Sign In with Email", error);
     // 必要に応じてエラーメッセージを投げる
+    throw error;
+  }
+}
+
+export async function registerWithEmail(email: string, password: string) {
+  try {
+    const { user } = await createUserWithEmailAndPassword(
+      firebaseAuth,
+      email,
+      password
+    );
+    if (user) {
+      const idToken = await user.getIdToken();
+      const refreshToken = user.refreshToken;
+
+      await signInWithNextAuth("credentials", {
+        idToken,
+        refreshToken,
+        callbackUrl: `/`,
+      });
+    }
+  } catch (error) {
+    console.error("Error Register with Email", error);
     throw error;
   }
 }

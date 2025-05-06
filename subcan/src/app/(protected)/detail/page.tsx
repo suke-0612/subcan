@@ -152,7 +152,7 @@ const SubscriptionDetail = ({ subsc_id }: Props) => {
 
       {/* 情報の修正 */}
       <div style={{ marginTop: "28px", textAlign: "center" }}>
-        <Link href={`/edit`}>
+        <Link href={`/edit?id=${subsc_id}`}>
           <button
             style={{
               padding: "10px 24px",
