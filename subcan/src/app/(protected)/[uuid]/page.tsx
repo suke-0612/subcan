@@ -8,8 +8,8 @@ interface PageProps {
   };
 }
 
-export default function DetailPage({ params }: PageProps) {
-  const { uuid } = params;
+export default async function DetailPage({ params }: PageProps) {
+  const { uuid } = await params;
 
   if (!uuid) {
     return notFound(); // データがなければ404
