@@ -9,7 +9,7 @@ interface PageProps {
 }
 
 export default async function DetailPage({ params }: PageProps) {
-  const { uuid } = await params;
+  const { uuid } = params;
 
   if (!uuid) {
     return notFound(); // データがなければ404
