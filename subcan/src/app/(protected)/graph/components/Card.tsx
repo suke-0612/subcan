@@ -45,7 +45,7 @@ const Card: React.FC<PieData> = (props) => {
 
       <div style={{ textAlign: "right" }}>
         <a
-          href={`/detail/${props.id}`}
+          href={`/${props.id}`}
           style={{
             color: "#3C6E71",
             fontSize: "14px",
