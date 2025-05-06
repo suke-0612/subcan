@@ -1,11 +1,50 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged, updatePassword } from "firebase/auth";
+import { logout } from "@/libs/firebase-auth";
 // import doLogout from "./test/logout";
 // import LogoutPage from "./test/logout";
 
 type Props = {};
 
 const MyComponent: React.FC<Props> = (props) => {
-  // const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.email) {
+        setEmail(user.email);
+      }
+    });
+  }, []);
+
+  const handlePasswordChange = async () => {
+    if (password !== confirm) {
+      setMessage("パスワードが一致しません。");
+      return;
+    }
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) {
+      setMessage("ログインしていません。");
+      return;
+    }
+
+    try {
+      await updatePassword(user, password);
+      setMessage("パスワードを変更しました。");
+      setPassword("");
+      setConfirm("");
+    } catch (error: any) {
+      setMessage(`エラー: ${error.message}`);
+    }
+  };
 
   return (
     <div style={{ margin: "50px" }}>
@@ -28,6 +67,7 @@ const MyComponent: React.FC<Props> = (props) => {
           htmlFor="email"
           style={{
             fontSize: "16px",
+            marginBottom: "1px",
             marginRight: "10px",
             whiteSpace: "nowrap",
             color: "gray",
@@ -36,22 +76,18 @@ const MyComponent: React.FC<Props> = (props) => {
         >
           メール
         </label>
-        <input
-          type="text"
-          value="example@example.com"
-          readOnly
-          //   type="email"
-          //   id="email"
-          placeholder="example@example.com"
+        <h1
           style={{
             flex: 1,
             border: "none",
             outline: "none",
             fontSize: "16px",
-            padding: "4px 0",
+            padding: "2px 4px 0",
             backgroundColor: "transparent",
           }}
-        />
+        >
+          {email || "読み込み中..."}
+        </h1>
       </div>
 
       <div
@@ -80,7 +116,8 @@ const MyComponent: React.FC<Props> = (props) => {
 
           <input
             type="password"
-            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             style={{
               flex: 1,
               border: "1px solid black",
@@ -109,7 +146,8 @@ const MyComponent: React.FC<Props> = (props) => {
 
           <input
             type="password"
-            id="password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
             style={{
               flex: 1,
               border: "1px solid black",
@@ -120,7 +158,31 @@ const MyComponent: React.FC<Props> = (props) => {
               padding: "4px 0",
               backgroundColor: "transparent",
             }}
-          ></input>
+          />
+        </div>
+
+        <div style={{ margin: "25px" }}>
+          <button
+            type="button"
+            onClick={handlePasswordChange}
+            style={{
+              padding: "10px 20px",
+              border: "1px solid black",
+              borderRadius: "10px",
+              backgroundColor: "white",
+              color: "black",
+              fontSize: "16px",
+              fontWeight: "bold",
+            }}
+          >
+            送信
+          </button>
+        </div>
+
+        <div>
+          {message && (
+            <p style={{ color: "red", fontSize: "14px" }}>{message}</p>
+          )}
         </div>
       </div>
 
@@ -132,7 +194,7 @@ const MyComponent: React.FC<Props> = (props) => {
           height: "15vh",
         }}
       >
-        {/* <button
+        <button
           style={{
             opacity: 0.5,
             width: "80%",
@@ -145,11 +207,10 @@ const MyComponent: React.FC<Props> = (props) => {
             fontSize: "20px",
             fontWeight: "bold",
           }}
-          onClick={LogoutPage}
+          onClick={logout}
         >
           ログアウト
-        </button> */}
-        {/* <LogoutPage /> */}
+        </button>
       </div>
     </div>
   );
